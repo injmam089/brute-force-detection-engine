@@ -1,0 +1,8 @@
+{
+  "failed_attempt_threshold": 10,
+  "time_window_seconds": 60,
+  "default_severity": "HIGH",
+  "input_file": "samples/auth.log",
+  "timestamp_year": 2026,
+  "output_directory": "output"
+}

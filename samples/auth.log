@@ -1,0 +1,24 @@
+Oct 12 10:00:00 sentinel sshd[41001]: Failed password for invalid user admin from 203.0.113.10 port 51001 ssh2
+Oct 12 10:00:05 sentinel sshd[41002]: Failed password for invalid user root from 203.0.113.10 port 51002 ssh2
+Oct 12 10:00:10 sentinel sshd[41003]: Failed password for invalid user deploy from 203.0.113.10 port 51003 ssh2
+Oct 12 10:00:15 sentinel sshd[41004]: Failed password for invalid user admin from 203.0.113.10 port 51004 ssh2
+Oct 12 10:00:20 sentinel sshd[41005]: Failed password for invalid user test from 203.0.113.10 port 51005 ssh2
+Oct 12 10:00:25 sentinel sshd[41006]: Failed password for invalid user ubuntu from 203.0.113.10 port 51006 ssh2
+Oct 12 10:00:30 sentinel sshd[41007]: Failed password for invalid user oracle from 203.0.113.10 port 51007 ssh2
+Oct 12 10:00:35 sentinel sshd[41008]: Failed password for invalid user guest from 203.0.113.10 port 51008 ssh2
+Oct 12 10:00:40 sentinel sshd[41009]: Failed password for invalid user postgres from 203.0.113.10 port 51009 ssh2
+Oct 12 10:00:45 sentinel sshd[41010]: Failed password for invalid user support from 203.0.113.10 port 51010 ssh2
+Oct 12 10:01:20 sentinel sshd[41011]: Failed password for invalid user admin from 203.0.113.10 port 51011 ssh2
+Oct 12 10:02:00 sentinel sshd[41012]: Failed password for invalid user root from 203.0.113.10 port 51012 ssh2
+Oct 12 10:00:08 sentinel sshd[42001]: Failed password for invalid user admin from 198.51.100.23 port 52001 ssh2
+Oct 12 10:00:18 sentinel sshd[42002]: Failed password for invalid user admin from 198.51.100.23 port 52002 ssh2
+Oct 12 10:00:28 sentinel sshd[42003]: Failed password for invalid user admin from 198.51.100.23 port 52003 ssh2
+Oct 12 10:00:38 sentinel sshd[42004]: Failed password for invalid user admin from 198.51.100.23 port 52004 ssh2
+Oct 12 10:00:48 sentinel sshd[42005]: Failed password for invalid user admin from 198.51.100.23 port 52005 ssh2
+Oct 12 10:00:58 sentinel sshd[42006]: Failed password for invalid user admin from 198.51.100.23 port 52006 ssh2
+Oct 12 10:01:03 sentinel sshd[42007]: Failed password for invalid user service from 198.51.100.23 port 52007 ssh2
+Oct 12 10:00:22 sentinel sshd[43001]: Accepted password for analyst from 203.0.113.44 port 53001 ssh2
+Oct 12 10:01:30 sentinel sshd[43002]: Accepted publickey for operator from 198.51.100.77 port 53002 ssh2
+Oct 12 10:00:xx sentinel sshd[44001]: Failed password for invalid user admin from 203.0.113.10 port 54001 ssh2
+this line is intentionally malformed and has no syslog timestamp
+Oct 12 10:03:10 sentinel sshd[broken]: Failed password from not-an-ip port ???
