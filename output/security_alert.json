@@ -1,0 +1,31 @@
+{
+  "alerts": [
+    {
+      "alert_id": "57c4894d-c9a7-43ae-8295-e51118f170ff",
+      "alert_type": "BRUTE_FORCE_DETECTED",
+      "attack_end_timestamp": "2026-10-12T10:00:45",
+      "attack_start_timestamp": "2026-10-12T10:00:00",
+      "detected_at": "2026-11-14T16:40:40+00:00",
+      "severity": "HIGH",
+      "source_ip": "203.0.113.10",
+      "status": "OPEN",
+      "targeted_usernames": [
+        "admin",
+        "deploy",
+        "guest",
+        "oracle",
+        "postgres",
+        "root",
+        "support",
+        "test",
+        "ubuntu"
+      ],
+      "threshold": 10,
+      "time_window_seconds": 60,
+      "total_failed_attempts": 10
+    }
+  ],
+  "generated_at": "2026-11-14T16:40:40+00:00",
+  "schema_version": "1.0",
+  "total_alerts": 1
+}

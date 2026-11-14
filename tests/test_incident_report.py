@@ -27,6 +27,7 @@ class IncidentReportTests(unittest.TestCase):
     def test_empty_incidents(self):
         text = generate_incident_report([], output_path=self.root / "r")
         self.assertIn("No incidents were detected", text)
+        self.assertIn("No detector evidence is available for triage", text)
 
     def test_severity_distribution(self):
         text = generate_incident_report([sample()], output_path=self.root / "r")
@@ -49,6 +50,15 @@ class IncidentReportTests(unittest.TestCase):
     def test_alert_association(self):
         alert = {"alert_id": "abc", "source_ip": "203.0.113.1", "attack_start_timestamp": sample()["attack_start_timestamp"], "attack_end_timestamp": sample()["attack_end_timestamp"]}
         self.assertIn("Alert ID: abc", generate_incident_report([sample()], [alert], self.root / "r"))
+
+    def test_triage_uses_detector_evidence_and_alert_id(self):
+        alert = {"alert_id": "abc", "source_ip": "203.0.113.1", "attack_start_timestamp": sample()["attack_start_timestamp"], "attack_end_timestamp": sample()["attack_end_timestamp"]}
+        text = generate_incident_report([sample()], [alert], self.root / "r")
+        self.assertIn("Incident-Response Triage Summary", text)
+        self.assertIn("Detected source IP: `203.0.113.1`", text)
+        self.assertIn("Failed attempt count: 10", text)
+        self.assertIn("Related alert ID: abc", text)
+        self.assertIn("does not by itself prove malicious activity", text)
 
     def test_optional_alerts(self):
         self.assertIn("Incident 1", generate_incident_report([sample()], output_path=self.root / "r"))

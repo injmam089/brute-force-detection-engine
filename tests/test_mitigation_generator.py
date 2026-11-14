@@ -4,7 +4,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from src.mitigation_generator import generate_mitigation_recommendations
+from src.mitigation_generator import (
+    generate_firewall_ban_list,
+    generate_mitigation_recommendations,
+)
 
 
 def sample(ip="203.0.113.1", severity="HIGH"):
@@ -23,7 +26,19 @@ class MitigationTests(unittest.TestCase):
 
     def test_iptables_rule(self):
         r = generate_mitigation_recommendations([sample()], self.root / "r", "iptables")
-        self.assertIn("iptables -A INPUT -s 203.0.113.1 -j DROP", r[0]["suggested_rule"])
+        self.assertIn("iptables -I INPUT 1 -s 203.0.113.1 -j DROP", r[0]["suggested_rule"])
+
+    def test_ban_list_includes_both_firewall_formats(self):
+        text = generate_firewall_ban_list(
+            [sample()], self.root / "firewall_ban_list.md"
+        )
+        self.assertIn("sudo ufw deny from 203.0.113.1 to any", text)
+        self.assertIn("sudo iptables -I INPUT 1 -s 203.0.113.1 -j DROP", text)
+        self.assertIn("administrator must review", text)
+
+    def test_empty_ban_list_has_no_rules(self):
+        text = generate_firewall_ban_list([], self.root / "firewall_ban_list.md")
+        self.assertIn("No detected source IPs", text)
 
     def test_invalid_ip_rejected(self):
         with self.assertRaises(ValueError):

@@ -85,7 +85,8 @@ def generate_alerts(
     """Generate one JSON alert per validated detector incident.
 
     The returned object matches the written JSON payload. If ``output_path``
-    is omitted, ``alerts.json`` is written under the configured output folder.
+    is omitted, ``security_alert.json`` is written under the configured output
+    folder.
     """
     validated_incidents = _validate_incidents(incidents)
     generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -116,7 +117,7 @@ def generate_alerts(
     destination = (
         Path(output_path)
         if output_path is not None
-        else _load_output_directory() / "alerts.json"
+        else _load_output_directory() / "security_alert.json"
     )
     try:
         destination.parent.mkdir(parents=True, exist_ok=True)
