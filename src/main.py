@@ -10,7 +10,10 @@ from src.alert_generator import generate_alerts
 from src.detector import detect_brute_force
 from src.incident_report import generate_incident_report
 from src.log_parser import parse_auth_log
-from src.mitigation_generator import generate_mitigation_recommendations
+from src.mitigation_generator import (
+    generate_firewall_ban_list,
+    generate_mitigation_recommendations,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -48,7 +51,8 @@ def run(args: argparse.Namespace) -> int:
         if parsed["error"]:
             raise ValueError(parsed["error"])
         incidents = detect_brute_force(parsed["events"], config)
-        alerts_data = generate_alerts(incidents, output_path / "alerts.json")
+        alert_path = output_path / "security_alert.json"
+        alerts_data = generate_alerts(incidents, alert_path)
         report_path = None
         if not args.no_report:
             generate_incident_report(incidents, alerts_data["alerts"], output_path / "incident_report.md")
@@ -60,15 +64,18 @@ def run(args: argparse.Namespace) -> int:
                 incidents, output_path / "mitigation_recommendations.json", args.firewall
             )
             recommendation_path = output_path / "mitigation_recommendations.json"
+            ban_list_path = output_path / "firewall_ban_list.md"
+            generate_firewall_ban_list(incidents, ban_list_path)
 
         print(f"Lines processed: {parsed['total_lines']}")
         print(f"Events parsed: {parsed['parsed_events']}")
         print(f"Incidents detected: {len(incidents)}")
-        print(f"Alerts generated: {alerts_data['total_alerts']} ({output_path / 'alerts.json'})")
+        print(f"Alerts generated: {alerts_data['total_alerts']} ({alert_path})")
         if report_path is not None:
             print(f"Incident report: {report_path}")
         if recommendation_path is not None:
             print(f"Mitigation recommendations ({args.firewall}, suggestions only): {recommendation_path}")
+            print(f"Firewall ban list (suggestions only): {ban_list_path}")
         return 0
     except (
         OSError,

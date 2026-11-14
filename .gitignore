@@ -17,6 +17,10 @@ env/
 # Generated output, except the directory placeholder
 output/*
 !output/.gitkeep
+!output/security_alert.json
+!output/incident_report.md
+!output/mitigation_recommendations.json
+!output/firewall_ban_list.md
 
 # IDE and editor files
 .idea/

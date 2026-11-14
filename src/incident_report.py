@@ -56,7 +56,13 @@ def generate_incident_report(
     generated = datetime.now(timezone.utc).isoformat(timespec="seconds")
     lines = ["# BruteForce Sentinel Incident Report", "", f"Generated: {generated}", "", f"Total incidents: {len(records)}", ""]
     if not records:
-        lines.append("No incidents were detected.")
+        lines.extend([
+            "No incidents were detected.",
+            "",
+            "## Incident-Response Triage Summary",
+            "",
+            "No detector evidence is available for triage.",
+        ])
     else:
         lines.extend(["## Severity distribution", ""])
         for severity, count in sorted(Counter(item["severity"] for item in records).items()):
@@ -83,7 +89,34 @@ def generate_incident_report(
             "- Validate whether the source activity is legitimate.",
             "- Check the affected accounts and authentication history.",
             "- Escalate confirmed incidents according to local procedures.",
+            "",
+            "## Incident-Response Triage Summary",
+            "",
+            "The following summaries are evidence-based investigation leads. A detection alert does not by itself prove malicious activity.",
         ])
+        for number, item in enumerate(records, 1):
+            key = (
+                item["source_ip"],
+                item["attack_start_timestamp"],
+                item["attack_end_timestamp"],
+            )
+            alert_ids = alert_by_incident.get(key, [])
+            lines.extend([
+                "",
+                f"### Triage {number}",
+                "",
+                f"- Detected source IP: `{item['source_ip']}`",
+                f"- Severity: {item['severity']}",
+                f"- Attack interval: {item['attack_start_timestamp']} to {item['attack_end_timestamp']}",
+                f"- Failed attempt count: {item['total_failed_attempts']}",
+                f"- Detection threshold: {item['threshold']} attempts in {item['time_window_seconds']} seconds",
+                f"- Targeted usernames: {', '.join(item['targeted_usernames']) or 'None supplied'}",
+                f"- Related alert ID: {', '.join(alert_ids) if alert_ids else 'No associated alert ID'}",
+                "- Review and validation: compare the interval with SSH, VPN, identity, and change-management records; verify whether the source and targeted accounts are expected.",
+                "- Evidence preservation: retain the original authentication-log lines and relevant system, network, and identity records before rotation or remediation.",
+                "- Escalation: notify the designated security owner when validation indicates unauthorized or high-risk activity, following local incident procedures.",
+                "- Authorized containment: after administrator review, consider the separately generated UFW or iptables suggestions; do not apply a block automatically.",
+            ])
     report = "\n".join(lines).rstrip() + "\n"
     destination = Path(output_path) if output_path is not None else _default_path()
     try:

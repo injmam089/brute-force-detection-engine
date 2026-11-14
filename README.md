@@ -45,6 +45,7 @@ The project follows this defensive security workflow:
 - Structured JSON alert generation.
 - Markdown incident reporting.
 - UFW and iptables mitigation recommendations.
+- A review-only firewall ban list with both command formats.
 - Command-line configuration and execution.
 - Automated unit and integration tests.
 
@@ -149,7 +150,11 @@ BruteForce-Sentinel/
 │   └── auth.log
 │
 ├── output/
-│   └── .gitkeep
+│   ├── .gitkeep
+│   ├── security_alert.json
+│   ├── incident_report.md
+│   ├── mitigation_recommendations.json
+│   └── firewall_ban_list.md
 │
 ├── tests/
 │   ├── __init__.py
@@ -291,7 +296,7 @@ The parser extracts structured information such as:
 | `source_ip` | Remote IPv4 address |
 | `username` | Account involved in authentication |
 | `event_type` | Authentication event category |
-| `raw_log` | Original log entry |
+| `raw_line` | Original log entry |
 | `line_number` | Original line position |
 
 ### Example Log Entry
@@ -373,7 +378,7 @@ Successful authentication events do not count toward the failed-attempt threshol
 
 ## 3️⃣ Security Alert Generation
 
-When the detection engine identifies a qualifying incident, the alert generator creates a structured JSON alert.
+When the detection engine identifies a qualifying incident, the alert generator creates `output/security_alert.json` containing structured JSON alerts.
 
 ### Alert Information
 
@@ -434,11 +439,17 @@ The Markdown report provides a readable summary for security analysts and helps 
 
 The report does not independently confirm whether an incident is malicious.
 
+### Incident-Response Triage Summary
+
+Each generated report includes an evidence-based triage entry derived from the detector result and its related alert ID. It records the source IP, severity, attack interval, failed-attempt count, threshold, and targeted usernames. It also directs the analyst to review and validate the activity, preserve original log and supporting identity/network evidence, escalate according to local procedures, and consider containment only after authorized administrator review. An alert is an investigation lead and does not by itself prove malicious activity.
+
 ---
 
 ## 5️⃣ Firewall Mitigation Recommendations
 
 The mitigation generator prepares firewall rule recommendations for detected source IP addresses.
+
+UFW and iptables are alternative firewall tools. An administrator should select the format appropriate to the host's firewall management approach, rather than applying both suggestions.
 
 ### UFW
 
@@ -449,7 +460,7 @@ sudo ufw deny from 203.0.113.10 to any
 ### iptables
 
 ```bash
-sudo iptables -A INPUT -s 203.0.113.10 -j DROP
+sudo iptables -I INPUT 1 -s 203.0.113.10 -j DROP
 ```
 
 ### Important Safety Note
@@ -461,6 +472,15 @@ It only generates recommendations for administrator review.
 Before applying any rule, an authorized administrator should verify the source address, operational impact, firewall configuration, and possibility of false positives.
 
 The tool does not automatically block IP addresses or modify system security settings.
+
+### Generated Firewall Ban List
+
+`output/firewall_ban_list.md` includes both formats for every detected source IP. UFW and iptables are alternatives: an authorized administrator should choose the appropriate tool for the host. The commands are suggestions only and are never executed by BruteForce Sentinel.
+
+```bash
+sudo ufw deny from 203.0.113.10 to any
+sudo iptables -I INPUT 1 -s 203.0.113.10 -j DROP
+```
 
 ---
 
@@ -478,13 +498,13 @@ No external dependencies are required.
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone https://github.com/injmam089/brute-force-detection-engine.git
+git clone https://github.com/injmam089/week-6-brute-force-sentinel.git
 ```
 
 ### Step 2 — Enter the Project Directory
 
 ```bash
-cd brute-force-detection-engine
+cd week-6-brute-force-sentinel
 ```
 
 ### Step 3 — Check Python Version
@@ -619,6 +639,12 @@ The included synthetic authentication log was used to demonstrate the complete d
 | Severity | HIGH |
 | Alert status | OPEN |
 
+The actual checked-in evidence was generated from `samples/auth.log` with the default configuration. It records one HIGH incident from `203.0.113.10`, with 10 failed attempts between `2026-10-12T10:00:00` and `2026-10-12T10:00:45`, against `admin`, `deploy`, `guest`, `oracle`, `postgres`, `root`, `support`, `test`, and `ubuntu`.
+
+### Sample Incident-Response Triage
+
+The generated incident report links the sample detector result to its alert ID and records the source IP, severity, interval, failure count, threshold, and targeted usernames. The triage recommends reviewing SSH, VPN, identity, and change-management records; preserving original authentication-log and related evidence; escalating validated high-risk activity; and considering the listed firewall suggestions only after authorized administrator review. This sample alert is an investigation lead, not proof of malicious activity.
+
 ### Generated Evidence
 
 The demonstration produces:
@@ -626,6 +652,9 @@ The demonstration produces:
 - Structured JSON alert.
 - Markdown incident report.
 - Firewall mitigation recommendations.
+- Firewall ban list containing UFW and iptables suggestions.
+
+The committed output evidence consists of `security_alert.json`, `incident_report.md`, `mitigation_recommendations.json`, and `firewall_ban_list.md`.
 
 These results describe the included synthetic dataset and are not evidence of an actual attack against a real system.
 
@@ -651,13 +680,13 @@ Shows the synthetic Linux SSH authentication log used for testing.
 
 ![Detection Execution](screenshots/03-detection-execution.png)
 
-Demonstrates the execution pipeline and detection summary.
+Earlier capture from before the filename polish; it may show the previous `alerts.json` alert filename. Current CLI output uses `security_alert.json`.
 
 ### 04 — JSON Alert Output
 
 ![JSON Alert Output](screenshots/04-json-alert-output.png)
 
-Shows the structured brute-force security alert.
+Earlier capture from before the filename polish; it shows the previous `alerts.json` alert filename. Current generated alert evidence is `security_alert.json`.
 
 ### 05 — Incident Report
 
@@ -795,7 +824,7 @@ GetIntern — 8-Week Practical Cybersecurity Track
 Week 6 — Automated Incident Alerting & Brute-Force Detection Engine
 
 **GitHub Repository:**  
-https://github.com/injmam089/brute-force-detection-engine
+https://github.com/injmam089/week-6-brute-force-sentinel
 
 ---
 

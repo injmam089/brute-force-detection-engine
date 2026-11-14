@@ -1,0 +1,10 @@
+[
+  {
+    "execution_warning": "Suggestion only; administrator review and approval are required. This IP has not been blocked.",
+    "firewall_type": "ufw",
+    "reason": "Repeated failed SSH authentication was detected from this source.",
+    "severity": "HIGH",
+    "source_ip": "203.0.113.10",
+    "suggested_rule": "sudo ufw deny from 203.0.113.10 to any"
+  }
+]

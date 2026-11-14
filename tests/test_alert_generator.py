@@ -152,7 +152,9 @@ class AlertGeneratorTests(unittest.TestCase):
                 encoding="utf-8",
             )
             generate_alerts([])
-        self.assertTrue((self.root / "chosen-output" / "alerts.json").is_file())
+        self.assertTrue(
+            (self.root / "chosen-output" / "security_alert.json").is_file()
+        )
 
 
 if __name__ == "__main__":
